@@ -89,6 +89,12 @@ curl -s http://install.iccluster.epfl.ch/scripts/it/scratchVolume.sh  >> scratch
 chmod 775 /scratch
 chown root:MLO-unit /scratch
 
+#########################################
+# Create and mount mlodata1 (you can manage the access from groups.epfl.ch) 
+mkdir /mlodata1
+echo "#mlodata1" >> /etc/fstab
+echo "ic1files.epfl.ch:/ic_mlo_1_files_nfs/mlodata1      /mlodata1     nfs     soft,intr,bg 0 0" >> /etc/fstab
+
 
 #########################################
 # Install CUDA !!! INSTALL APRES REBOOT !!!
