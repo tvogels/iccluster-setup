@@ -77,7 +77,7 @@ apt-get update
 #########################################
 # Install LDAP + Autmount
 curl -s http://install.iccluster.epfl.ch/scripts/it/ldapAutoMount.sh  >> ldapAutoMount.sh ; chmod +x ldapAutoMount.sh ; ./ldapAutoMount.sh
-echo "+ : root pagliard (MLO-unit) (IC-IT-unit): ALL" >> /etc/security/access.conf
+echo "+ : root pagliard (mlologins) (MLO-unit) (IC-IT-unit): ALL" >> /etc/security/access.conf
 echo "- : ALL : ALL" >> /etc/security/access.conf
 systemctl stop autofs
 systemctl disable autofs
