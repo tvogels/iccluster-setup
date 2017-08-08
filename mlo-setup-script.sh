@@ -83,6 +83,26 @@ systemctl stop autofs
 systemctl disable autofs
 echo "session    required    pam_mkhomedir.so skel=/etc/skel/ umask=0022" >> /etc/pam.d/common-session
 
+
+#########################################
+#PAM Mount
+apt-get install -y libpam-mount cifs-utils ldap-utils
+# Backup
+cp /etc/security/pam_mount.conf.xml /etc/security/pam_mount.conf.xml.orig
+cp /etc/pam.d/common-auth /etc/pam.d/common-auth.orig
+cd /
+wget -P / install.iccluster.epfl.ch/scripts/it/pam_mount.tar.gz
+tar xzvf pam_mount.tar.gz
+rm -f /pam_mount.tar.gz
+sed -i.bak '/and here are more per-package modules/a auth    optional      pam_exec.so /usr/local/bin/login.pl common-auth' /etc/pam.d/common-auth
+# Custom Template
+wget install.iccluster.epfl.ch/scripts/mlo/template_.pam_mount.conf.xml -O /etc/security/.pam_mount.conf.xml
+
+echo manual | sudo tee /etc/init/autofs.override
+
+echo "unix" >> /var/lib/pam/seen
+pam-auth-update --force --package
+
 #########################################
 # Create /scratch 
 curl -s http://install.iccluster.epfl.ch/scripts/it/scratchVolume.sh  >> scratchVolume.sh ; chmod +x scratchVolume.sh ; ./scratchVolume.sh
