@@ -150,6 +150,18 @@ apt-get install -y gdb cmake cmake-curses-gui autoconf gcc gcc-multilib g++-mult
 # Python related stuff
 apt-get install -y python-pip python-dev python-setuptools build-essential python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose python3 python3-pip python3-dev python-wheel python3-wheel python-boto
 
+# Python packages using pip
+# ipython in apt-get is outdated
+pip install ipython --upgrade 
+
+########################################
+# NLTK
+pip install -U nltk
+
+#######################################
+# MATLAB 9.1 (2016b)
+        curl -s http://install.iccluster.epfl.ch/scripts/soft/matlab/R2016b.sh  >> R2016b.sh; chmod +x R2016b.sh; ./R2016b.sh
+
 #########################################
 # bazel
 ## JAVA
@@ -161,16 +173,6 @@ apt-get install -y oracle-java8-installer
 wget -P /tmp https://github.com/bazelbuild/bazel/releases/download/0.4.1/bazel-0.4.1-installer-linux-x86_64.sh
 chmod +x /tmp/bazel-0.4.1-installer-linux-x86_64.sh
 /tmp/bazel-0.4.1-installer-linux-x86_64.sh 
-
-
-#########################################
-# Python packages using pip
-# ipython in apt-get is outdated
-pip install ipython --upgrade 
-
-########################################
-# NLTK
-pip install -U nltk
 
 #########################################
 # python3 as default
@@ -184,10 +186,6 @@ RUN pip --no-cache-dir install \
         http://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-${TENSORFLOW_VERSION}-cp27-none-linux_x86_64.whl
 
 #######################################
-# MATLAB 9.1 (2016b)
-        curl -s http://install.iccluster.epfl.ch/scripts/soft/matlab/R2016b.sh  >> R2016b.sh; chmod +x R2016b.sh; ./R2016b.sh
-
-#######################################
 # ANACONDA
 wget http://install.iccluster.epfl.ch/scripts/soft/anaconda/Anaconda3-4.3.0-Linux-x86_64.sh -O /tmp/Anaconda3-4.3.0-Linux-x86_64.sh
 chmod +x /tmp/Anaconda3-4.3.0-Linux-x86_64.sh
@@ -197,14 +195,14 @@ export PATH="/opt/anaconda3/bin:$PATH"
 #######################################
 # TORCH
 curl -s https://raw.githubusercontent.com/torch/ezinstall/master/install-deps | bash
-git clone https://github.com/torch/distro.git /torch --recursive
-cd /torch; yes | ./install.sh
+git clone https://github.com/torch/distro.git /opt/torch --recursive
+cd /opt/torch; yes | ./install.sh
 echo PATH="/torch/install/bin/th:$PATH" > /etc/environment
 
 #######################################
 # PyTorch
-git clone https://github.com/pytorch/pytorch.git /PyTorch --recursive
-cd /PyTorch ; python setup.py install
+git clone https://github.com/pytorch/pytorch.git /opt/PyTorch --recursive
+cd /opt/PyTorch ; python setup.py install
 
 	;;
 "CentOS-Linux") echo $DISTRIB
