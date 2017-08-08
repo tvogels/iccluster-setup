@@ -202,8 +202,8 @@ echo PATH="/opt/torch/install/bin:$PATH" > /etc/environment
 
 #######################################
 # PyTorch
-conda install pytorch torchvision cuda80 -c soumith
-conda install -c anaconda tensorflow-gpu
+conda install -y pytorch torchvision cuda80 -c soumith
+conda install -y -c anaconda tensorflow-gpu
 #git clone https://github.com/pytorch/pytorch.git /opt/PyTorch --recursive
 #cd /opt/PyTorch ; python setup.py install
 
