@@ -185,14 +185,14 @@ RUN pip --no-cache-dir install \
 
 #######################################
 # MATLAB 9.1 (2016b)
-#        curl -s http://install.iccluster.epfl.ch/scripts/soft/matlab/R2016b.sh  >> R2016b.sh; chmod +x R2016b.sh; ./R2016b.sh
+        curl -s http://install.iccluster.epfl.ch/scripts/soft/matlab/R2016b.sh  >> R2016b.sh; chmod +x R2016b.sh; ./R2016b.sh
 
 #######################################
 # ANACONDA
-#wget http://install.iccluster.epfl.ch/scripts/soft/anaconda/Anaconda3-4.3.0-Linux-x86_64.sh -O /tmp/Anaconda3-4.3.0-Linux-x86_64.sh
-#chmod +x /tmp/Anaconda3-4.3.0-Linux-x86_64.sh
-#/tmp/Anaconda3-4.3.0-Linux-x86_64.sh -b -p /opt/anaconda3/
-#export PATH="/opt/anaconda3/bin:$PATH"
+wget http://install.iccluster.epfl.ch/scripts/soft/anaconda/Anaconda3-4.3.0-Linux-x86_64.sh -O /tmp/Anaconda3-4.3.0-Linux-x86_64.sh
+chmod +x /tmp/Anaconda3-4.3.0-Linux-x86_64.sh
+/tmp/Anaconda3-4.3.0-Linux-x86_64.sh -b -p /opt/anaconda3/
+export PATH="/opt/anaconda3/bin:$PATH"
 
 #######################################
 # TORCH
