@@ -160,7 +160,7 @@ pip install -U nltk
 
 #######################################
 # MATLAB 9.1 (2016b)
-        curl -s http://install.iccluster.epfl.ch/scripts/soft/matlab/R2016b.sh  >> R2016b.sh; chmod +x R2016b.sh; ./R2016b.sh
+# §curl -s http://install.iccluster.epfl.ch/scripts/soft/matlab/R2016b.sh  >> R2016b.sh; chmod +x R2016b.sh; ./R2016b.sh
 
 #########################################
 # bazel
@@ -176,20 +176,21 @@ chmod +x /tmp/bazel-0.4.1-installer-linux-x86_64.sh
 
 #########################################
 # python3 as default
-update-alternatives --install /usr/bin/python python /usr/bin/python3 2
-update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 2
+# update-alternatives --install /usr/bin/python python /usr/bin/python3 2
+# update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 2
 
 #########################################
 # Install TensorFlow GPU version.
-TENSORFLOW_VERSION=1.2.1
-RUN pip --no-cache-dir install \
-        http://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-${TENSORFLOW_VERSION}-cp27-none-linux_x86_64.whl
+# TENSORFLOW_VERSION=1.2.1
+# pip --no-cache-dir install \
+#        http://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-${TENSORFLOW_VERSION}-cp27-none-linux_x86_64.whl
 
 #######################################
 # ANACONDA
 wget http://install.iccluster.epfl.ch/scripts/soft/anaconda/Anaconda3-4.3.0-Linux-x86_64.sh -O /tmp/Anaconda3-4.3.0-Linux-x86_64.sh
 chmod +x /tmp/Anaconda3-4.3.0-Linux-x86_64.sh
 /tmp/Anaconda3-4.3.0-Linux-x86_64.sh -b -p /opt/anaconda3/
+echo PATH="/opt/anaconda4/bin:$PATH"  > /etc/environment
 export PATH="/opt/anaconda3/bin:$PATH"
 
 #######################################
@@ -197,12 +198,14 @@ export PATH="/opt/anaconda3/bin:$PATH"
 curl -s https://raw.githubusercontent.com/torch/ezinstall/master/install-deps | bash
 git clone https://github.com/torch/distro.git /opt/torch --recursive
 cd /opt/torch; yes | ./install.sh
-echo PATH="/torch/install/bin/th:$PATH" > /etc/environment
+echo PATH="/opt/torch/install/bin:$PATH" > /etc/environment
 
 #######################################
 # PyTorch
-git clone https://github.com/pytorch/pytorch.git /opt/PyTorch --recursive
-cd /opt/PyTorch ; python setup.py install
+conda install pytorch torchvision cuda80 -c soumith
+conda install -c anaconda tensorflow-gpu
+#git clone https://github.com/pytorch/pytorch.git /opt/PyTorch --recursive
+#cd /opt/PyTorch ; python setup.py install
 
 	;;
 "CentOS-Linux") echo $DISTRIB
