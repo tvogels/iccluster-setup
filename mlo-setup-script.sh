@@ -177,6 +177,35 @@ pip install -U nltk
 update-alternatives --install /usr/bin/python python /usr/bin/python3 2
 update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 2
 
+#########################################
+# Install TensorFlow GPU version.
+TENSORFLOW_VERSION=1.2.1
+RUN pip --no-cache-dir install \
+        http://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-${TENSORFLOW_VERSION}-cp27-none-linux_x86_64.whl
+
+#######################################
+# MATLAB 9.1 (2016b)
+#        curl -s http://install.iccluster.epfl.ch/scripts/soft/matlab/R2016b.sh  >> R2016b.sh; chmod +x R2016b.sh; ./R2016b.sh
+
+#######################################
+# ANACONDA
+#wget http://install.iccluster.epfl.ch/scripts/soft/anaconda/Anaconda3-4.3.0-Linux-x86_64.sh -O /tmp/Anaconda3-4.3.0-Linux-x86_64.sh
+#chmod +x /tmp/Anaconda3-4.3.0-Linux-x86_64.sh
+#/tmp/Anaconda3-4.3.0-Linux-x86_64.sh -b -p /opt/anaconda3/
+#export PATH="/opt/anaconda3/bin:$PATH"
+
+#######################################
+# TORCH
+curl -s https://raw.githubusercontent.com/torch/ezinstall/master/install-deps | bash
+git clone https://github.com/torch/distro.git /torch --recursive
+cd /torch; yes | ./install.sh
+echo PATH="/torch/install/bin/th:$PATH" > /etc/environment
+
+#######################################
+# PyTorch
+git clone https://github.com/pytorch/pytorch.git /PyTorch --recursive
+cd /PyTorch ; python setup.py install
+
 	;;
 "CentOS-Linux") echo $DISTRIB
     ;;
