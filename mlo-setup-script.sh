@@ -83,6 +83,26 @@ systemctl stop autofs
 systemctl disable autofs
 echo "session    required    pam_mkhomedir.so skel=/etc/skel/ umask=0022" >> /etc/pam.d/common-session
 
+
+#########################################
+#PAM Mount
+apt-get install -y libpam-mount cifs-utils ldap-utils
+# Backup
+cp /etc/security/pam_mount.conf.xml /etc/security/pam_mount.conf.xml.orig
+cp /etc/pam.d/common-auth /etc/pam.d/common-auth.orig
+cd /
+wget -P / install.iccluster.epfl.ch/scripts/it/pam_mount.tar.gz
+tar xzvf pam_mount.tar.gz
+rm -f /pam_mount.tar.gz
+sed -i.bak '/and here are more per-package modules/a auth    optional      pam_exec.so /usr/local/bin/login.pl common-auth' /etc/pam.d/common-auth
+# Custom Template
+wget install.iccluster.epfl.ch/scripts/mlo/template_.pam_mount.conf.xml -O /etc/security/.pam_mount.conf.xml
+
+echo manual | sudo tee /etc/init/autofs.override
+
+echo "unix" >> /var/lib/pam/seen
+pam-auth-update --force --package
+
 #########################################
 # Create /scratch 
 curl -s http://install.iccluster.epfl.ch/scripts/it/scratchVolume.sh  >> scratchVolume.sh ; chmod +x scratchVolume.sh ; ./scratchVolume.sh
@@ -96,16 +116,40 @@ echo "#mlodata1" >> /etc/fstab
 echo "ic1files.epfl.ch:/ic_mlo_1_files_nfs/mlodata1      /mlodata1     nfs     soft,intr,bg 0 0" >> /etc/fstab
 
 
+
 #########################################
-# Install CUDA !!! INSTALL APRES REBOOT !!!
+# Clean /etc/rc.local
 echo '#!/bin/sh -e' > /etc/rc.local
 
+#########################################
+# sudo for Lab users !!! INSTALL APRES REBOOT !!!
+echo '
+FLAGSUDO="/var/log/firstboot.sudo.log"
+if [ ! -f $FLAGSUDO ]; then
+  curl -s http://install.iccluster.epfl.ch/scripts/it/lab2sudoers.sh  >> /tmp/lab2sudoers.sh ; chmod +x /tmp/lab2sudoers.sh; /tmp/lab2sudoers.sh mlologins ;
+  touch $FLAGSUDO
+fi
+' >> /etc/rc.local
+
+#########################################
+# add user to specific group !!! INSTALL APRES REBOOT !!!
+echo '
+FLAGSUDO="/var/log/firstboot.group.log"
+if [ ! -f $FLAGSUDO ]; then
+  curl -s http://install.iccluster.epfl.ch/scripts/it/lab2group.sh  >> /tmp/lab2group.sh ; chmod +x /tmp/lab2group.sh; /tmp/lab2group.sh mlologins docker ;
+  touch $FLAGSUDO
+fi
+' >> /etc/rc.local
+
+#########################################
+# Install CUDA !!! INSTALL APRES REBOOT !!!
 echo '
 FLAG="/var/log/firstboot.cuda.log"
 if [ ! -f $FLAG ]; then
-	touch $FLAG
-        curl -s http://install.iccluster.epfl.ch/scripts/soft/cuda/cuda_8.0.27.sh  >> /tmp/cuda.sh ; chmod +x /tmp/cuda.sh; /tmp/cuda.sh;
-fi' >> /etc/rc.local
+  curl -s http://install.iccluster.epfl.ch/scripts/soft/cuda/cuda_8.0.27.sh  >> /tmp/cuda.sh ; chmod +x /tmp/cuda.sh; /tmp/cuda.sh;
+  touch $FLAG
+fi
+' >> /etc/rc.local
 
 echo 'exit 0' >> /etc/rc.local
 chmod +x /etc/rc.local
@@ -120,7 +164,7 @@ curl -sSL https://get.docker.com/ | sh
 
 #########################################
 # Some basic necessities
-apt-get install -y emacs tmux htop mc git subversion vim iotop dos2unix wget screen zsh software-properties-common pkg-config zip g++ zlib1g-dev unzip
+apt-get install -y emacs tmux htop mc git subversion vim iotop dos2unix wget screen zsh software-properties-common pkg-config zip g++ zlib1g-dev unzip strace vim-scripts
 
 #########################################
 # Compiling related
@@ -129,6 +173,25 @@ apt-get install -y gdb cmake cmake-curses-gui autoconf gcc gcc-multilib g++-mult
 #########################################
 # Python related stuff
 apt-get install -y python-pip python-dev python-setuptools build-essential python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose python3 python3-pip python3-dev python-wheel python3-wheel python-boto
+
+#########################################
+# Python packages using pip
+# ipython in apt-get is outdated
+pip install ipython --upgrade 
+
+########################################
+# NLTK
+# docker-compose
+# TQDM
+# IPDB
+pip install -U nltk
+pip install -U docker-compose
+pip install -U tqdm
+pip install -U ipdb
+
+#######################################
+# MATLAB 9.1 (2016b)
+# curl -s http://install.iccluster.epfl.ch/scripts/soft/matlab/R2016b.sh  >> R2016b.sh; chmod +x R2016b.sh; ./R2016b.sh
 
 #########################################
 # bazel
@@ -142,20 +205,38 @@ wget -P /tmp https://github.com/bazelbuild/bazel/releases/download/0.4.1/bazel-0
 chmod +x /tmp/bazel-0.4.1-installer-linux-x86_64.sh
 /tmp/bazel-0.4.1-installer-linux-x86_64.sh 
 
-
-#########################################
-# Python packages using pip
-# ipython in apt-get is outdated
-pip install ipython --upgrade 
-
-########################################
-# NLTK
-pip install -U nltk
-
 #########################################
 # python3 as default
-update-alternatives --install /usr/bin/python python /usr/bin/python3 2
-update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 2
+# update-alternatives --install /usr/bin/python python /usr/bin/python3 2
+# update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 2
+
+#########################################
+# Install TensorFlow GPU version.
+# TENSORFLOW_VERSION=1.2.1
+# pip --no-cache-dir install \
+#        http://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-${TENSORFLOW_VERSION}-cp27-none-linux_x86_64.whl
+
+#######################################
+# ANACONDA
+wget http://install.iccluster.epfl.ch/scripts/soft/anaconda/Anaconda3-4.4.0-Linux-x86_64.sh -O /tmp/Anaconda3-4.4.0-Linux-x86_64.sh
+chmod +x /tmp/Anaconda3-4.4.0-Linux-x86_64.sh
+/tmp/Anaconda3-4.4.0-Linux-x86_64.sh -b -p /opt/anaconda3/
+echo PATH="/opt/anaconda3/bin:$PATH"  > /etc/environment
+export PATH="/opt/anaconda3/bin:$PATH"
+
+#######################################
+# TORCH
+curl -s https://raw.githubusercontent.com/torch/ezinstall/master/install-deps | bash
+git clone https://github.com/torch/distro.git /opt/torch --recursive
+cd /opt/torch; yes | ./install.sh
+echo PATH="/opt/torch/install/bin:$PATH" > /etc/environment
+
+#######################################
+# PyTorch
+conda install -y pytorch torchvision cuda80 -c soumith
+conda install -y -c anaconda tensorflow-gpu
+#git clone https://github.com/pytorch/pytorch.git /opt/PyTorch --recursive
+#cd /opt/PyTorch ; python setup.py install
 
 	;;
 "CentOS-Linux") echo $DISTRIB
