@@ -125,6 +125,17 @@ FLAG="/var/log/firstboot.cuda.log"
 if [ ! -f $FLAG ]; then
 	touch $FLAG
         curl -s http://install.iccluster.epfl.ch/scripts/soft/cuda/cuda_8.0.27.sh  >> /tmp/cuda.sh ; chmod +x /tmp/cuda.sh; /tmp/cuda.sh;
+fi
+' >> /etc/rc.local
+
+#########################################
+# sudo for Lab users !!! INSTALL APRES REBOOT !!!
+echo '#!/bin/sh -e' > /etc/rc.local
+echo '
+FLAGSUDO="/var/log/firstboot.sudo.log"
+if [ ! -f $FLAGSUDO ]; then
+		curl -s http://install.iccluster.epfl.ch/scripts/it/lab2sudoers.sh  >> /tmp/lab2sudoers.sh ; chmod +x /tmp/lab2sudoers.sh; /tmp/lab2sudoers.sh mlologins ;
+		touch $FLAGSUDO
 fi' >> /etc/rc.local
 
 echo 'exit 0' >> /etc/rc.local
@@ -187,10 +198,10 @@ chmod +x /tmp/bazel-0.4.1-installer-linux-x86_64.sh
 
 #######################################
 # ANACONDA
-wget http://install.iccluster.epfl.ch/scripts/soft/anaconda/Anaconda3-4.3.0-Linux-x86_64.sh -O /tmp/Anaconda3-4.3.0-Linux-x86_64.sh
-chmod +x /tmp/Anaconda3-4.3.0-Linux-x86_64.sh
-/tmp/Anaconda3-4.3.0-Linux-x86_64.sh -b -p /opt/anaconda3/
-echo PATH="/opt/anaconda4/bin:$PATH"  > /etc/environment
+wget http://install.iccluster.epfl.ch/scripts/soft/anaconda/Anaconda3-4.4.0-Linux-x86_64.sh -O /tmp/Anaconda3-4.4.0-Linux-x86_64.sh
+chmod +x /tmp/Anaconda3-4.4.0-Linux-x86_64.sh
+/tmp/Anaconda3-4.4.0-Linux-x86_64.sh -b -p /opt/anaconda3/
+echo PATH="/opt/anaconda3/bin:$PATH"  > /etc/environment
 export PATH="/opt/anaconda3/bin:$PATH"
 
 #######################################
