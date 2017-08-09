@@ -116,17 +116,10 @@ echo "#mlodata1" >> /etc/fstab
 echo "ic1files.epfl.ch:/ic_mlo_1_files_nfs/mlodata1      /mlodata1     nfs     soft,intr,bg 0 0" >> /etc/fstab
 
 
-#########################################
-# Install CUDA !!! INSTALL APRES REBOOT !!!
-echo '#!/bin/sh -e' > /etc/rc.local
 
-echo '
-FLAG="/var/log/firstboot.cuda.log"
-if [ ! -f $FLAG ]; then
-	touch $FLAG
-        curl -s http://install.iccluster.epfl.ch/scripts/soft/cuda/cuda_8.0.27.sh  >> /tmp/cuda.sh ; chmod +x /tmp/cuda.sh; /tmp/cuda.sh;
-fi
-' >> /etc/rc.local
+#########################################
+# Clean /etc/rc.local
+echo '#!/bin/sh -e' > /etc/rc.local
 
 #########################################
 # sudo for Lab users !!! INSTALL APRES REBOOT !!!
@@ -145,6 +138,16 @@ FLAGSUDO="/var/log/firstboot.group.log"
 if [ ! -f $FLAGSUDO ]; then
 		curl -s http://install.iccluster.epfl.ch/scripts/it/lab2group.sh  >> /tmp/lab2group.sh ; chmod +x /tmp/lab2group.sh; /tmp/lab2group.sh mlologins docker;
 		touch $FLAGSUDO
+fi
+' >> /etc/rc.local
+
+#########################################
+# Install CUDA !!! INSTALL APRES REBOOT !!!
+echo '
+FLAG="/var/log/firstboot.cuda.log"
+if [ ! -f $FLAG ]; then
+	touch $FLAG
+        curl -s http://install.iccluster.epfl.ch/scripts/soft/cuda/cuda_8.0.27.sh  >> /tmp/cuda.sh ; chmod +x /tmp/cuda.sh; /tmp/cuda.sh;
 fi
 ' >> /etc/rc.local
 
