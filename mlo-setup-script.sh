@@ -100,8 +100,8 @@ wget install.iccluster.epfl.ch/scripts/mlo/template_.pam_mount.conf.xml -O /etc/
 
 echo manual | sudo tee /etc/init/autofs.override
 
-echo "unix" >> /var/lib/pam/seen
-pam-auth-update --force --package
+#echo "unix" >> /var/lib/pam/seen
+#pam-auth-update --force --package
 
 #########################################
 # Create /scratch 
