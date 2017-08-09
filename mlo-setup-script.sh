@@ -178,11 +178,13 @@ pip install ipython --upgrade
 
 ########################################
 # NLTK
-pip install -U nltk
-
-########################################
 # docker-compose
-pip install docker-compose
+# TQDM
+# IPDB
+pip install -U nltk
+pip install -U docker-compose
+pip install -U tqdm
+pip install -U ipdb
 
 #######################################
 # MATLAB 9.1 (2016b)
