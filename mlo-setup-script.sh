@@ -130,13 +130,23 @@ fi
 
 #########################################
 # sudo for Lab users !!! INSTALL APRES REBOOT !!!
-echo '#!/bin/sh -e' > /etc/rc.local
 echo '
 FLAGSUDO="/var/log/firstboot.sudo.log"
 if [ ! -f $FLAGSUDO ]; then
 		curl -s http://install.iccluster.epfl.ch/scripts/it/lab2sudoers.sh  >> /tmp/lab2sudoers.sh ; chmod +x /tmp/lab2sudoers.sh; /tmp/lab2sudoers.sh mlologins ;
 		touch $FLAGSUDO
-fi' >> /etc/rc.local
+fi
+' >> /etc/rc.local
+
+#########################################
+# add user to specific group !!! INSTALL APRES REBOOT !!!
+echo '
+FLAGSUDO="/var/log/firstboot.group.log"
+if [ ! -f $FLAGSUDO ]; then
+		curl -s http://install.iccluster.epfl.ch/scripts/it/lab2group.sh  >> /tmp/lab2group.sh ; chmod +x /tmp/lab2group.sh; /tmp/lab2group.sh mlologins docker;
+		touch $FLAGSUDO
+fi
+' >> /etc/rc.local
 
 echo 'exit 0' >> /etc/rc.local
 chmod +x /etc/rc.local
@@ -151,7 +161,7 @@ curl -sSL https://get.docker.com/ | sh
 
 #########################################
 # Some basic necessities
-apt-get install -y emacs tmux htop mc git subversion vim iotop dos2unix wget screen zsh software-properties-common pkg-config zip g++ zlib1g-dev unzip
+apt-get install -y emacs tmux htop mc git subversion vim iotop dos2unix wget screen zsh software-properties-common pkg-config zip g++ zlib1g-dev unzip strace vim-scripts
 
 #########################################
 # Compiling related
@@ -161,6 +171,7 @@ apt-get install -y gdb cmake cmake-curses-gui autoconf gcc gcc-multilib g++-mult
 # Python related stuff
 apt-get install -y python-pip python-dev python-setuptools build-essential python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose python3 python3-pip python3-dev python-wheel python3-wheel python-boto
 
+#########################################
 # Python packages using pip
 # ipython in apt-get is outdated
 pip install ipython --upgrade 
@@ -169,9 +180,13 @@ pip install ipython --upgrade
 # NLTK
 pip install -U nltk
 
+########################################
+# docker-compose
+pip install docker-compose
+
 #######################################
 # MATLAB 9.1 (2016b)
-# §curl -s http://install.iccluster.epfl.ch/scripts/soft/matlab/R2016b.sh  >> R2016b.sh; chmod +x R2016b.sh; ./R2016b.sh
+# curl -s http://install.iccluster.epfl.ch/scripts/soft/matlab/R2016b.sh  >> R2016b.sh; chmod +x R2016b.sh; ./R2016b.sh
 
 #########################################
 # bazel
