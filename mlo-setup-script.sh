@@ -126,8 +126,8 @@ echo '#!/bin/sh -e' > /etc/rc.local
 echo '
 FLAGSUDO="/var/log/firstboot.sudo.log"
 if [ ! -f $FLAGSUDO ]; then
-		curl -s http://install.iccluster.epfl.ch/scripts/it/lab2sudoers.sh  >> /tmp/lab2sudoers.sh ; chmod +x /tmp/lab2sudoers.sh; /tmp/lab2sudoers.sh mlologins ;
-		touch $FLAGSUDO
+  curl -s http://install.iccluster.epfl.ch/scripts/it/lab2sudoers.sh  >> /tmp/lab2sudoers.sh ; chmod +x /tmp/lab2sudoers.sh; /tmp/lab2sudoers.sh mlologins ;
+  touch $FLAGSUDO
 fi
 ' >> /etc/rc.local
 
@@ -136,8 +136,8 @@ fi
 echo '
 FLAGSUDO="/var/log/firstboot.group.log"
 if [ ! -f $FLAGSUDO ]; then
-		curl -s http://install.iccluster.epfl.ch/scripts/it/lab2group.sh  >> /tmp/lab2group.sh ; chmod +x /tmp/lab2group.sh; /tmp/lab2group.sh mlologins docker;
-		touch $FLAGSUDO
+  curl -s http://install.iccluster.epfl.ch/scripts/it/lab2group.sh  >> /tmp/lab2group.sh ; chmod +x /tmp/lab2group.sh; /tmp/lab2group.sh mlologins docker ;
+  touch $FLAGSUDO
 fi
 ' >> /etc/rc.local
 
@@ -146,8 +146,8 @@ fi
 echo '
 FLAG="/var/log/firstboot.cuda.log"
 if [ ! -f $FLAG ]; then
-	touch $FLAG
-        curl -s http://install.iccluster.epfl.ch/scripts/soft/cuda/cuda_8.0.27.sh  >> /tmp/cuda.sh ; chmod +x /tmp/cuda.sh; /tmp/cuda.sh;
+  curl -s http://install.iccluster.epfl.ch/scripts/soft/cuda/cuda_8.0.27.sh  >> /tmp/cuda.sh ; chmod +x /tmp/cuda.sh; /tmp/cuda.sh;
+  touch $FLAG
 fi
 ' >> /etc/rc.local
 
