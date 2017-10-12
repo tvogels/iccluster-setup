@@ -63,9 +63,9 @@ else
 
 fi
 
-## Check OS and do the install 
+## Check OS and do the install
 # Remove spaces
-DISTRIB=${DIST// /-} 					
+DISTRIB=${DIST// /-}
 
 # Check OS
 case "$DISTRIB" in
@@ -104,13 +104,13 @@ echo "unix" >> /var/lib/pam/seen
 pam-auth-update --force --package
 
 #########################################
-# Create /scratch 
+# Create /scratch
 curl -s http://install.iccluster.epfl.ch/scripts/it/scratchVolume.sh  >> scratchVolume.sh ; chmod +x scratchVolume.sh ; ./scratchVolume.sh
 chmod 775 /scratch
 chown root:MLO-unit /scratch
 
 #########################################
-# Create and mount mlodata1 (you can manage the access from groups.epfl.ch) 
+# Create and mount mlodata1 (you can manage the access from groups.epfl.ch)
 mkdir /mlodata1
 echo "#mlodata1" >> /etc/fstab
 echo "ic1files.epfl.ch:/ic_mlo_1_files_nfs/mlodata1      /mlodata1     nfs     soft,intr,bg 0 0" >> /etc/fstab
@@ -168,7 +168,7 @@ apt-get install -y emacs tmux htop mc git subversion vim iotop dos2unix wget scr
 
 #########################################
 # Compiling related
-apt-get install -y gdb cmake cmake-curses-gui autoconf gcc gcc-multilib g++-multilib 
+apt-get install -y gdb cmake cmake-curses-gui autoconf gcc gcc-multilib g++-multilib
 
 #########################################
 # Python related stuff
@@ -177,17 +177,11 @@ apt-get install -y python-pip python-dev python-setuptools build-essential pytho
 #########################################
 # Python packages using pip
 # ipython in apt-get is outdated
-pip install ipython --upgrade 
+pip install ipython --upgrade
 
 ########################################
-# NLTK
 # docker-compose
-# TQDM
-# IPDB
-pip install -U nltk
 pip install -U docker-compose
-pip install -U tqdm
-pip install -U ipdb
 
 #######################################
 # MATLAB 9.1 (2016b)
@@ -203,7 +197,7 @@ apt-get install -y oracle-java8-installer
 ## Next
 wget -P /tmp https://github.com/bazelbuild/bazel/releases/download/0.4.1/bazel-0.4.1-installer-linux-x86_64.sh
 chmod +x /tmp/bazel-0.4.1-installer-linux-x86_64.sh
-/tmp/bazel-0.4.1-installer-linux-x86_64.sh 
+/tmp/bazel-0.4.1-installer-linux-x86_64.sh
 
 #########################################
 # python3 as default
@@ -234,9 +228,14 @@ echo PATH="/opt/torch/install/bin:$PATH" > /etc/environment
 #######################################
 # PyTorch
 conda install -y pytorch torchvision cuda80 -c soumith
+# git clone https://github.com/pytorch/pytorch.git /opt/PyTorch --recursive
+# cd /opt/PyTorch ; python setup.py install
+
+# Tensorflow
 conda install -y -c anaconda tensorflow-gpu
-#git clone https://github.com/pytorch/pytorch.git /opt/PyTorch --recursive
-#cd /opt/PyTorch ; python setup.py install
+
+# install other necessary packages
+conda install -y nltk tpdm ipdb
 
 	;;
 "CentOS-Linux") echo $DISTRIB
