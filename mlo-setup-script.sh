@@ -162,6 +162,11 @@ export LC_ALL=C
 ## Install Docker
 curl -sSL https://get.docker.com/ | sh
 
+## Install Docker-compose
+curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+export PATH="/usr/local/bin/:$PATH"
+
 #########################################
 # Some basic necessities
 apt-get install -y emacs tmux htop mc git subversion vim iotop dos2unix wget screen zsh software-properties-common pkg-config zip g++ zlib1g-dev unzip strace vim-scripts
@@ -178,10 +183,6 @@ apt-get install -y python-pip python-dev python-setuptools build-essential pytho
 # Python packages using pip
 # ipython in apt-get is outdated
 pip install ipython --upgrade
-
-########################################
-# docker-compose
-pip install -U docker-compose
 
 #######################################
 # MATLAB 9.1 (2016b)
