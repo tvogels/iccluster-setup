@@ -120,6 +120,7 @@ echo "ic1files.epfl.ch:/ic_mlo_1_files_nfs/mlodata1      /mlodata1     nfs     s
 #########################################
 # Clean /etc/rc.local
 echo '#!/bin/sh -e' > /etc/rc.local
+echo 'sleep 30 # wait for ldap service to be started' >> /etc/rc.local
 
 #########################################
 # sudo for Lab users !!! INSTALL APRES REBOOT !!!
@@ -134,10 +135,10 @@ fi
 #########################################
 # add user to specific group !!! INSTALL APRES REBOOT !!!
 echo '
-FLAGSUDO="/var/log/firstboot.group.log"
-if [ ! -f $FLAGSUDO ]; then
+FLAGDOCKER="/var/log/firstboot.group.log"
+if [ ! -f $FLAGDOCKER ]; then
   curl -s http://install.iccluster.epfl.ch/scripts/it/lab2group.sh  >> /tmp/lab2group.sh ; chmod +x /tmp/lab2group.sh; /tmp/lab2group.sh mlologins docker ;
-  touch $FLAGSUDO
+  touch $FLAGDOCKER
 fi
 ' >> /etc/rc.local
 
@@ -146,8 +147,8 @@ fi
 echo '
 FLAG="/var/log/firstboot.cuda.log"
 if [ ! -f $FLAG ]; then
-  curl -s http://install.iccluster.epfl.ch/scripts/soft/cuda/cuda_8.0.27.sh  >> /tmp/cuda.sh ; chmod +x /tmp/cuda.sh; /tmp/cuda.sh;
   touch $FLAG
+  curl http://install.iccluster.epfl.ch/scripts/soft/cuda/cuda_8.0.27.sh  >> /tmp/cuda.sh ; chmod +x /tmp/cuda.sh; bash -x /tmp/cuda.sh >> /var/log/install.cuda.log
 fi
 ' >> /etc/rc.local
 
