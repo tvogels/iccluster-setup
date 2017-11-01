@@ -148,7 +148,7 @@ echo '
 FLAG="/var/log/firstboot.cuda.log"
 if [ ! -f $FLAG ]; then
   touch $FLAG
-  curl http://install.iccluster.epfl.ch/scripts/soft/cuda/cuda_8.0.27.sh  >> /tmp/cuda.sh ; chmod +x /tmp/cuda.sh; bash -x /tmp/cuda.sh >> /var/log/install.cuda.log
+  curl http://install.iccluster.epfl.ch/scripts/soft/cuda/cuda_8.0.61.sh  >> /tmp/cuda.sh ; chmod +x /tmp/cuda.sh; bash -x /tmp/cuda.sh >> /var/log/install.cuda.log
 fi
 ' >> /etc/rc.local
 
