@@ -168,6 +168,10 @@ curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compos
 chmod +x /usr/local/bin/docker-compose
 export PATH="/usr/local/bin/:$PATH"
 
+## install nvidia-docker
+wget -P /tmp https://github.com/NVIDIA/nvidia-docker/releases/download/v1.0.1/nvidia-docker_1.0.1-1_amd64.deb
+dpkg -i /tmp/nvidia-docker*.deb && rm /tmp/nvidia-docker*.deb
+
 #########################################
 # Some basic necessities
 apt-get install -y emacs tmux htop mc git subversion vim iotop dos2unix wget screen zsh software-properties-common pkg-config zip g++ zlib1g-dev unzip strace vim-scripts
