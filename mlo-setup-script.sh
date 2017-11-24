@@ -161,7 +161,7 @@ export LC_ALL=C
 
 ########################################
 ## Install Docker
-curl -sSL https://get.docker.com/ | sh
+apt-get install docker-ce=17.09.0~ce-0~ubuntu
 
 ## Install Docker-compose
 curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
@@ -169,8 +169,21 @@ chmod +x /usr/local/bin/docker-compose
 export PATH="/usr/local/bin/:$PATH"
 
 ## install nvidia-docker
-wget -P /tmp https://github.com/NVIDIA/nvidia-docker/releases/download/v1.0.1/nvidia-docker_1.0.1-1_amd64.deb
-dpkg -i /tmp/nvidia-docker*.deb && rm /tmp/nvidia-docker*.deb
+# If you have nvidia-docker 1.0 installed: we need to remove it and all existing GPU containers
+docker volume ls -q -f driver=nvidia-docker | xargs -r -I{} -n1 docker ps -q -a -f volume={} | xargs -r docker rm -f
+apt-get purge -y nvidia-docker
+# Add the package repositories
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | \
+  sudo apt-key add -
+curl -s -L https://nvidia.github.io/nvidia-docker/ubuntu16.04/amd64/nvidia-docker.list | \
+  sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+apt-get update
+# Install nvidia-docker2 and reload the Docker daemon configuration
+apt-get install -y nvidia-docker2
+pkill -SIGHUP dockerd
+
+# Test nvidia-smi with the latest official CUDA image
+docker run --runtime=nvidia --rm nvidia/cuda nvidia-smi
 
 #########################################
 # Some basic necessities
