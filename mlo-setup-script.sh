@@ -115,22 +115,14 @@ mkdir /mlodata1
 echo "#mlodata1" >> /etc/fstab
 echo "ic1files.epfl.ch:/ic_mlo_1_files_nfs/mlodata1      /mlodata1     nfs     soft,intr,bg 0 0" >> /etc/fstab
 
-
+#########################################
+# sudo for Lab users 
+echo "%mlologins ALL=(ALL:ALL) ALL" > /etc/sudoers.d/mlologins
 
 #########################################
 # Clean /etc/rc.local
 echo '#!/bin/sh -e' > /etc/rc.local
-echo 'sleep 30 # wait for ldap service to be started' >> /etc/rc.local
-
-#########################################
-# sudo for Lab users !!! INSTALL APRES REBOOT !!!
-echo '
-FLAGSUDO="/var/log/firstboot.sudo.log"
-if [ ! -f $FLAGSUDO ]; then
-  curl -s http://install.iccluster.epfl.ch/scripts/it/lab2sudoers.sh  >> /tmp/lab2sudoers.sh ; chmod +x /tmp/lab2sudoers.sh; /tmp/lab2sudoers.sh mlologins ;
-  touch $FLAGSUDO
-fi
-' >> /etc/rc.local
+echo 'sleep 60 # wait for ldap service to be started' >> /etc/rc.local
 
 #########################################
 # add user to specific group !!! INSTALL APRES REBOOT !!!
@@ -161,7 +153,11 @@ export LC_ALL=C
 
 ########################################
 ## Install Docker
-apt-get install docker-ce=17.09.0~ce-0~ubuntu
+apt-get install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+apt-get update
+apt-get -y -qq install docker-ce
 
 ## Install Docker-compose
 curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
