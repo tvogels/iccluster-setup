@@ -1,0 +1,11 @@
+cffi
+cmake
+jupyterlab
+lmdb
+mkl
+numpy
+pyyaml
+setuptools
+tensorboardX
+tensorflow
+tensorflow-tensorboard
