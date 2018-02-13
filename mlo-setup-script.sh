@@ -268,10 +268,8 @@ conda install -y nltk tpdm ipdb
    ;;
 esac
 
-rm -- "$0"
-
-
 # setup GUI for monitoring
 #   https://github.com/ThomasRobertFr/gpu-monitor
 /mlodata1/gpu-monitor/install.sh
 
+rm -- "$0"
