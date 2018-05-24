@@ -63,9 +63,9 @@ else
 
 fi
 
-## Check OS and do the install
+## Check OS and do the install 
 # Remove spaces
-DISTRIB=${DIST// /-}
+DISTRIB=${DIST// /-} 					
 
 # Check OS
 case "$DISTRIB" in
@@ -76,15 +76,15 @@ apt-get update
 
 #########################################
 # Install LDAP + Autmount
-curl -s http://install.iccluster.epfl.ch/scripts/it/ldapAutoMount.sh  >> ldapAutoMount.sh ; chmod +x ldapAutoMount.sh ; ./ldapAutoMount.sh
-echo "+ : root pagliard (mlologins) (MLO-unit) (IC-IT-unit): ALL" >> /etc/security/access.conf
-echo "- : ALL : ALL" >> /etc/security/access.conf
-systemctl stop autofs
-systemctl disable autofs
+apt-get install sssd libpam-sss libnss-sss sssd-tools tcsh nfs-common -y
+mkdir -p /etc/openldap/cacerts
+wget http://rauth.epfl.ch/Quovadis_Root_CA_2.pem -O /etc/openldap/cacerts/quovadis.pem
+wget http://install.iccluster.epfl.ch/scripts/it/sssd/sssd.conf -O /etc/sssd/sssd.conf
+chmod 0600 /etc/sssd/sssd.conf
+sed -i 's|simple_allow_groups = IC-IT-unit|simple_allow_groups = IC-IT-unit,MLO-unit,mlologins|g' /etc/sssd/sssd.conf
+sed -i 's|nis|ldap|' /etc/nsswitch.conf
 echo "session    required    pam_mkhomedir.so skel=/etc/skel/ umask=0022" >> /etc/pam.d/common-session
 
-
-#########################################
 #PAM Mount
 apt-get install -y libpam-mount cifs-utils ldap-utils
 # Backup
@@ -94,20 +94,20 @@ cd /
 wget -P / install.iccluster.epfl.ch/scripts/it/pam_mount.tar.gz
 tar xzvf pam_mount.tar.gz
 rm -f /pam_mount.tar.gz
-sed -i.bak '/and here are more per-package modules/a auth    optional      pam_exec.so /usr/local/bin/login.pl common-auth' /etc/pam.d/common-auth
 # Custom Template
 wget install.iccluster.epfl.ch/scripts/mlo/template_.pam_mount.conf.xml -O /etc/security/.pam_mount.conf.xml
-
 echo manual | sudo tee /etc/init/autofs.override
-
 echo "unix" >> /var/lib/pam/seen
 pam-auth-update --force --package
+sed -i.bak '/and here are more per-package modules/a auth    optional      pam_exec.so /usr/local/bin/login.pl common-auth' /etc/pam.d/common-auth
+service sssd restart
 
 #########################################
 # Create /scratch
 curl -s http://install.iccluster.epfl.ch/scripts/it/scratchVolume.sh  >> scratchVolume.sh ; chmod +x scratchVolume.sh ; ./scratchVolume.sh
 chmod 775 /scratch
 chown root:MLO-unit /scratch
+
 
 #########################################
 # Create and mount mlodata1 (you can manage the access from groups.epfl.ch)
@@ -116,79 +116,25 @@ echo "#mlodata1" >> /etc/fstab
 echo "ic1files.epfl.ch:/ic_mlo_1_files_nfs/mlodata1      /mlodata1     nfs     soft,intr,bg 0 0" >> /etc/fstab
 
 #########################################
-# sudo for Lab users 
-echo "%mlologins ALL=(ALL:ALL) ALL" > /etc/sudoers.d/mlologins
-
-#########################################
-# Clean /etc/rc.local
-echo '#!/bin/sh -e' > /etc/rc.local
-echo 'sleep 60 # wait for ldap service to be started' >> /etc/rc.local
-
-#########################################
-# add user to specific group !!! INSTALL APRES REBOOT !!!
-echo '
-FLAGDOCKER="/var/log/firstboot.group.log"
-if [ ! -f $FLAGDOCKER ]; then
-  curl -s http://install.iccluster.epfl.ch/scripts/it/lab2group.sh  >> /tmp/lab2group.sh ; chmod +x /tmp/lab2group.sh; /tmp/lab2group.sh mlologins docker ;
-  touch $FLAGDOCKER
-fi
-' >> /etc/rc.local
-
-#########################################
 # Install CUDA !!! INSTALL APRES REBOOT !!!
+echo '#!/bin/sh -e' > /etc/rc.local
+
 echo '
 FLAG="/var/log/firstboot.cuda.log"
 if [ ! -f $FLAG ]; then
-  touch $FLAG
-  curl http://install.iccluster.epfl.ch/scripts/soft/cuda/cuda_8.0.61.sh  >> /tmp/cuda.sh ; chmod +x /tmp/cuda.sh; bash -x /tmp/cuda.sh >> /var/log/install.cuda.log
-fi
-' >> /etc/rc.local
+	touch $FLAG
+        curl -s http://install.iccluster.epfl.ch/scripts/soft/cuda/cuda_9.2.88_396.26.sh  >> /tmp/cuda.sh ; chmod +x /tmp/cuda.sh; /tmp/cuda.sh;
+fi' >> /etc/rc.local
+
+echo '
+FLAGSCRATCH="/var/log/firstboot.scratch.log"
+if [ ! -f $FLAGSCRATCH ]; then
+        touch $FLAGSCRATCH
+	chown root:MLO-unit /scratch
+fi' >> /etc/rc.local
 
 echo 'exit 0' >> /etc/rc.local
 chmod +x /etc/rc.local
-
-#########################################
-# Install CUDNN
-CUDNN_TAR_FILE="cudnn-8.0-linux-x64-v6.0.tgz"
-wget http://developer.download.nvidia.com/compute/redist/cudnn/v6.0/${CUDNN_TAR_FILE}
-tar -xzvf ${CUDNN_TAR_FILE}
-cp -P cuda/include/cudnn.h /usr/local/cuda-8.0/include
-cp -P cuda/lib64/libcudnn* /usr/local/cuda-8.0/lib64/
-chmod a+r /usr/local/cuda-8.0/lib64/libcudnn*
-
-#########################################
-# export LC_ALL
-export LC_ALL=C
-
-########################################
-## Install Docker
-apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-apt-get update
-apt-get -y -qq install docker-ce
-
-## Install Docker-compose
-curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
-export PATH="/usr/local/bin/:$PATH"
-
-## install nvidia-docker
-# If you have nvidia-docker 1.0 installed: we need to remove it and all existing GPU containers
-docker volume ls -q -f driver=nvidia-docker | xargs -r -I{} -n1 docker ps -q -a -f volume={} | xargs -r docker rm -f
-apt-get purge -y nvidia-docker
-# Add the package repositories
-curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | \
-  sudo apt-key add -
-curl -s -L https://nvidia.github.io/nvidia-docker/ubuntu16.04/amd64/nvidia-docker.list | \
-  sudo tee /etc/apt/sources.list.d/nvidia-docker.list
-apt-get update
-# Install nvidia-docker2 and reload the Docker daemon configuration
-apt-get install -y nvidia-docker2
-pkill -SIGHUP dockerd
-
-# Test nvidia-smi with the latest official CUDA image
-docker run --runtime=nvidia --rm nvidia/cuda nvidia-smi
 
 #########################################
 # Some basic necessities
@@ -200,47 +146,31 @@ apt-get install -y gdb cmake cmake-curses-gui autoconf gcc gcc-multilib g++-mult
 
 #########################################
 # Python related stuff
-apt-get install -y python-pip python-dev python-setuptools build-essential python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose python3 python3-pip python3-dev python-wheel python3-wheel python-boto
+apt-get install -y python-pip python-dev python-setuptools build-essential python-numpy python-scipy python-matplotlib python-pandas python-sympy python-nose python3 python3-pip python3-dev python-wheel python3-wheel python-boto
 
-#########################################
-# Python packages using pip
-# ipython in apt-get is outdated
-pip install ipython --upgrade
+pip install ipython[all]
 
-#######################################
-# MATLAB 9.1 (2016b)
-# curl -s http://install.iccluster.epfl.ch/scripts/soft/matlab/R2016b.sh  >> R2016b.sh; chmod +x R2016b.sh; ./R2016b.sh
+wget https://repo.continuum.io/archive/Anaconda3-5.0.1-Linux-x86_64.sh -P /tmp; chmod +x /tmp/Anaconda3-5.0.1-Linux-x86_64.sh; /tmp/Anaconda3-5.0.1-Linux-x86_64.sh -b -p /opt/anaconda3
+echo PATH="/opt/anaconda3/bin:$PATH"  > /etc/environment
+export PATH="/opt/anaconda3/bin:$PATH"
+
+########################################
+## Install Docker
+apt-get install -y docker.io
+# docker-compose
+pip install -U docker-compose
 
 #########################################
 # bazel
 ## JAVA
 add-apt-repository ppa:webupd8team/java -y
 apt-get update
-echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | sudo debconf-set-selections
+echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
 apt-get install -y oracle-java8-installer
-## Next
-wget -P /tmp https://github.com/bazelbuild/bazel/releases/download/0.4.1/bazel-0.4.1-installer-linux-x86_64.sh
-chmod +x /tmp/bazel-0.4.1-installer-linux-x86_64.sh
-/tmp/bazel-0.4.1-installer-linux-x86_64.sh
-
-#########################################
-# python3 as default
-# update-alternatives --install /usr/bin/python python /usr/bin/python3 2
-# update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 2
-
-#########################################
-# Install TensorFlow GPU version.
-# TENSORFLOW_VERSION=1.2.1
-# pip --no-cache-dir install \
-#        http://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-${TENSORFLOW_VERSION}-cp27-none-linux_x86_64.whl
-
-#######################################
-# ANACONDA
-wget http://install.iccluster.epfl.ch/scripts/soft/anaconda/Anaconda3-4.4.0-Linux-x86_64.sh -O /tmp/Anaconda3-4.4.0-Linux-x86_64.sh
-chmod +x /tmp/Anaconda3-4.4.0-Linux-x86_64.sh
-/tmp/Anaconda3-4.4.0-Linux-x86_64.sh -b -p /opt/anaconda3/
-echo PATH="/opt/anaconda3/bin:$PATH"  > /etc/environment
-export PATH="/opt/anaconda3/bin:$PATH"
+echo "deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list
+curl https://bazel.build/bazel-release.pub.gpg | apt-key add -
+apt-get update 
+apt-get -y install bazel
 
 #######################################
 # TORCH
@@ -249,11 +179,11 @@ git clone https://github.com/torch/distro.git /opt/torch --recursive
 cd /opt/torch; yes | ./install.sh
 echo PATH="/opt/torch/install/bin:$PATH" > /etc/environment
 
-#######################################
 # PyTorch
 conda install -y pytorch torchvision cuda80 -c soumith
-# git clone https://github.com/pytorch/pytorch.git /opt/PyTorch --recursive
-# cd /opt/PyTorch ; python setup.py install
+# PyTorch 4
+pip3 install http://download.pytorch.org/whl/cu91/torch-0.4.0-cp36-cp36m-linux_x86_64.whl
+pip3 install torchvision
 
 # Tensorflow
 conda install -y -c anaconda tensorflow-gpu
@@ -261,15 +191,14 @@ conda install -y -c anaconda tensorflow-gpu
 # install other necessary packages
 conda install -y nltk tpdm ipdb
 
+# Add users to sudo and docker group
+curl -s http://install.iccluster.epfl.ch/scripts/it/lab2group.sh  >> /tmp/lab2group.sh ; chmod +x /tmp/lab2group.sh; /tmp/lab2group.sh mlologins sudo 
+curl -s http://install.iccluster.epfl.ch/scripts/it/lab2group.sh  >> /tmp/lab2group.sh ; chmod +x /tmp/lab2group.sh; /tmp/lab2group.sh mlologins docker 
 	;;
 "CentOS-Linux") echo $DISTRIB
     ;;
 *) echo "Invalid OS: " $DISTRIB
    ;;
 esac
-
-# setup GUI for monitoring
-#   https://github.com/ThomasRobertFr/gpu-monitor
-/mlodata1/gpu-monitor/install.sh
 
 rm -- "$0"
