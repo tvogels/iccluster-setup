@@ -182,11 +182,18 @@ echo PATH="/opt/torch/install/bin:$PATH" > /etc/environment
 # PyTorch
 conda install -y pytorch torchvision cuda80 -c soumith
 # PyTorch 4
-pip3 install http://download.pytorch.org/whl/cu91/torch-0.4.0-cp36-cp36m-linux_x86_64.whl
-pip3 install torchvision
+#pip3 install http://download.pytorch.org/whl/cu91/torch-0.4.0-cp36-cp36m-linux_x86_64.whl
+#pip3 install torchvision
+/opt/anaconda3/bin/conda install pytorch torchvision -c pytorch -y
 
 # Tensorflow
 conda install -y -c anaconda tensorflow-gpu
+
+# Renganathan Suresh Nikhil Krishna <nikhil.renganathansuresh@epfl.ch>
+/opt/anaconda3/bin/pip install tensorboardX
+
+# Franceschi Jean-Yves <jean-yves.franceschi@epfl.ch>
+/opt/anaconda3/bin/pip install fastdtw
 
 # install other necessary packages
 conda install -y nltk tpdm ipdb
