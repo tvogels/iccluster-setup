@@ -199,9 +199,23 @@ conda install -y -c anaconda tensorflow-gpu
 conda install -y nltk tpdm ipdb
 
 # Add users to sudo and docker group
-curl -s http://install.iccluster.epfl.ch/scripts/it/lab2group.sh  >> /tmp/lab2group.sh ; chmod +x /tmp/lab2group.sh; /tmp/lab2group.sh mlologins sudo 
-curl -s http://install.iccluster.epfl.ch/scripts/it/lab2group.sh  >> /tmp/lab2group.sh ; chmod +x /tmp/lab2group.sh; /tmp/lab2group.sh mlologins docker 
-	;;
+curl -s http://install.iccluster.epfl.ch/scripts/it/lab2group.sh  >> /tmp/lab2group.sh ; chmod +x /tmp/lab2group.sh; /tmp/lab2group.sh mlologins sudo
+curl -s http://install.iccluster.epfl.ch/scripts/it/lab2group.sh  >> /tmp/lab2group.sh ; chmod +x /tmp/lab2group.sh; /tmp/lab2group.sh mlologins docker
+
+# Service Account for GPU-Monitor
+echo "mlo-gpu-monitor ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+#setup GUI for monitoring
+#   https://github.com/ThomasRobertFr/gpu-monitor
+
+# runuser -l mlo-gpu-monitor -c '/mlodata1/gpu-monitor/install_scripts/install.sh' >> /var/log/mlo.log
+
+apt-get install -y nvidia-docker2=2.0.3+docker17.12.1-1 nvidia-container-runtime=2.0.0+docker17.12.1-1
+apt-get install -y bc
+usermod -a -G docker mlo-gpu-monitor
+su -c "/mlodata1/gpu-monitor/scripts/install.sh" mlo-gpu-monitor
+
+
+    ;;
 "CentOS-Linux") echo $DISTRIB
     ;;
 *) echo "Invalid OS: " $DISTRIB
