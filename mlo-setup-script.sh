@@ -214,6 +214,13 @@ apt-get install -y bc
 usermod -a -G docker mlo-gpu-monitor
 su -c "/mlodata1/gpu-monitor/scripts/install.sh" mlo-gpu-monitor
 
+echo "SERVER_GID=164045" >>  /etc/default/ceph
+apt-get install -y ceph-common
+mkdir /mlo-container-scratch
+su -c "cp /mlodata1/mlo.ceph.container.client.key /tmp" mlo-gpu-monitor
+cp /tmp/mlo.ceph.container.client.key /etc/ceph/
+
+mount -t ceph icadmin006,icadmin007,icadmin008:/mlo-scratch /mlo-container-scratch -o rw,relatime,name=mlo,secretfile=/etc/ceph/mlo.ceph.container.client.key,acl,noatime,nodiratime
 
     ;;
 "CentOS-Linux") echo $DISTRIB
