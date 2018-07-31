@@ -74,6 +74,10 @@ case "$DISTRIB" in
 #########################################
 apt-get update
 
+#Install ceph-common before LDAP
+echo "SERVER_GID=164045" >>  /etc/default/ceph
+apt-get install -y ceph-common
+
 #########################################
 # Install LDAP + Autmount
 apt-get install sssd libpam-sss libnss-sss sssd-tools tcsh nfs-common -y
@@ -214,8 +218,6 @@ apt-get install -y bc
 usermod -a -G docker mlo-gpu-monitor
 su -c "/mlodata1/gpu-monitor/scripts/install.sh" mlo-gpu-monitor
 
-echo "SERVER_GID=164045" >>  /etc/default/ceph
-apt-get install -y ceph-common
 mkdir /mlo-container-scratch
 su -c "cp /mlodata1/mlo.ceph.container.client.key /tmp" mlo-gpu-monitor
 cp /tmp/mlo.ceph.container.client.key /etc/ceph/
