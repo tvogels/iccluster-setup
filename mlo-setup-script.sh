@@ -74,10 +74,6 @@ case "$DISTRIB" in
 #########################################
 apt-get update
 
-#Install ceph-common before LDAP
-echo "SERVER_GID=164045" >>  /etc/default/ceph
-apt-get install -y ceph-common
-
 #########################################
 # Install LDAP + Autmount
 apt-get install sssd libpam-sss libnss-sss sssd-tools tcsh nfs-common -y
@@ -118,6 +114,9 @@ chown root:MLO-unit /scratch
 mkdir /mlodata1
 echo "#mlodata1" >> /etc/fstab
 echo "ic1files.epfl.ch:/ic_mlo_1_files_nfs/mlodata1      /mlodata1     nfs     soft,intr,bg 0 0" >> /etc/fstab
+
+#Mount during the setup
+mount -a
 
 #########################################
 # Install CUDA !!! INSTALL APRES REBOOT !!!
@@ -202,12 +201,14 @@ conda install -y -c anaconda tensorflow-gpu
 # install other necessary packages
 conda install -y nltk tpdm ipdb
 
-# Add users to sudo and docker group
-curl -s http://install.iccluster.epfl.ch/scripts/it/lab2group.sh  >> /tmp/lab2group.sh ; chmod +x /tmp/lab2group.sh; /tmp/lab2group.sh mlologins sudo
-curl -s http://install.iccluster.epfl.ch/scripts/it/lab2group.sh  >> /tmp/lab2group.sh ; chmod +x /tmp/lab2group.sh; /tmp/lab2group.sh mlologins docker
+# sudoers mlologins members
+echo "%mlologins ALL=(ALL:ALL) ALL" > /etc/sudoers.d/mlologins
+
+# Add users to docker group
+curl -s http://install.iccluster.epfl.ch/scripts/it/lab2group.sh  >> /tmp/lab2group.sh ; chmod +x /tmp/lab2group.sh; /tmp/lab2group.sh mlologins docker 
 
 # Service Account for GPU-Monitor
-echo "mlo-gpu-monitor ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+echo "mlo-gpu-monitor ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/mlo-gpu-monitor
 #setup GUI for monitoring
 #   https://github.com/ThomasRobertFr/gpu-monitor
 
@@ -224,7 +225,14 @@ cp /tmp/mlo.ceph.container.client.key /etc/ceph/
 
 mount -t ceph icadmin006,icadmin007,icadmin008:/mlo-scratch /mlo-container-scratch -o rw,relatime,name=mlo,secretfile=/etc/ceph/mlo.ceph.container.client.key,acl,noatime,nodiratime
 
-    ;;
+export DEBIAN_FRONTEND=noninteractive
+echo "force-confold" >> /etc/dpkg/dpkg.cfg
+echo "force-confdef" >> /etc/dpkg/dpkg.cfg
+echo "SERVER_GID=164045" >>  /etc/default/ceph
+apt-get install -y ceph-common
+
+
+	;;
 "CentOS-Linux") echo $DISTRIB
     ;;
 *) echo "Invalid OS: " $DISTRIB
