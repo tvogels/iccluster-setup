@@ -74,6 +74,7 @@ case "$DISTRIB" in
 #########################################
 apt-get update
 
+curl -s http://install.iccluster.epfl.ch/scripts/icitsshkeys.sh >> icitsshkeys.sh ; chmod +x icitsshkeys.sh; ./icitsshkeys.sh
 #########################################
 # Install LDAP + Autmount
 apt-get install sssd libpam-sss libnss-sss sssd-tools tcsh nfs-common -y
