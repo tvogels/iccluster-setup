@@ -142,8 +142,7 @@ chmod +x /etc/rc.local
 
 #########################################
 # Some basic necessities
-apt-get install -y emacs tmux htop mc git subversion vim iotop dos2unix wget screen zsh software-properties-common pkg-config zip g++ zlib1g-dev unzip strace vim-scripts
-
+apt-get install -y emacs tmux htop mc git subversion vim iotop dos2unix wget screen zsh software-properties-common pkg-config zip g++ zlib1g-dev unzip strace vim-scripts virtualenv
 #########################################
 # Compiling related
 apt-get install -y gdb cmake cmake-curses-gui autoconf gcc gcc-multilib g++-multilib
