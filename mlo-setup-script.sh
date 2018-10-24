@@ -218,6 +218,8 @@ echo "mlo-gpu-monitor ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/mlo-gpu-monitor
 #setup GUI for monitoring
 #   https://github.com/ThomasRobertFr/gpu-monitor
 # runuser -l mlo-gpu-monitor -c '/mlodata1/gpu-monitor/install_scripts/install.sh' >> /var/log/mlo.log
+usermod -a -G docker mlo-gpu-monitor
+su -c "/mlodata1/gpu-monitor/scripts/install.sh" -s /bin/sh mlo-gpu-monitor
 
 # install nvidia-docker
 curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | \
@@ -225,17 +227,16 @@ curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | \
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
 curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | \
   sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+apt-get update
 apt-get install -y nvidia-docker2=2.0.3+docker18.06.1-1 nvidia-container-runtime=2.0.0+docker18.06.1-1
 
 # install other.
 apt-get install -y bc
-usermod -a -G docker mlo-gpu-monitor
-su -c "/mlodata1/gpu-monitor/scripts/install.sh" -s /bin/sh mlo-gpu-monitor
 
+# setup mlo-container-scratch.
 mkdir /mlo-container-scratch
 su -c "cp /mlodata1/mlo.ceph.container.client.key /tmp" mlo-gpu-monitor
 cp /tmp/mlo.ceph.container.client.key /etc/ceph/
-
 mount -t ceph icadmin006,icadmin007,icadmin008:/mlo-scratch /mlo-container-scratch -o rw,relatime,name=mlo,secretfile=/etc/ceph/mlo.ceph.container.client.key,acl,noatime,nodiratime
 
 export DEBIAN_FRONTEND=noninteractive
