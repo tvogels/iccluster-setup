@@ -217,7 +217,7 @@ echo "mlo-gpu-monitor ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/mlo-gpu-monitor
 apt-get install -y nvidia-docker2=2.0.3+docker17.12.1-1 nvidia-container-runtime=2.0.0+docker17.12.1-1
 apt-get install -y bc
 usermod -a -G docker mlo-gpu-monitor
-su -c "/mlodata1/gpu-monitor/scripts/install.sh" mlo-gpu-monitor
+su -c "/mlodata1/gpu-monitor/scripts/install.sh" -s /bin/sh mlo-gpu-monitor
 
 mkdir /mlo-container-scratch
 su -c "cp /mlodata1/mlo.ceph.container.client.key /tmp" mlo-gpu-monitor
