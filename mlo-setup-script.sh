@@ -63,9 +63,9 @@ else
 
 fi
 
-## Check OS and do the install 
+## Check OS and do the install
 # Remove spaces
-DISTRIB=${DIST// /-} 					
+DISTRIB=${DIST// /-}
 
 # Check OS
 case "$DISTRIB" in
@@ -159,7 +159,7 @@ export PATH="/opt/anaconda3/bin:$PATH"
 
 ########################################
 ## Install Docker
-apt-get install -y docker.io
+apt-get install -y docker.ce
 # docker-compose
 pip install -U docker-compose
 
@@ -172,7 +172,7 @@ echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | 
 apt-get install -y oracle-java8-installer
 echo "deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list
 curl https://bazel.build/bazel-release.pub.gpg | apt-key add -
-apt-get update 
+apt-get update
 apt-get -y install bazel
 
 #######################################
@@ -205,7 +205,7 @@ conda install -y nltk tpdm ipdb
 echo "%mlologins ALL=(ALL:ALL) ALL" > /etc/sudoers.d/mlologins
 
 # Add users to docker group
-curl -s http://install.iccluster.epfl.ch/scripts/it/lab2group.sh  >> /tmp/lab2group.sh ; chmod +x /tmp/lab2group.sh; /tmp/lab2group.sh mlologins docker 
+curl -s http://install.iccluster.epfl.ch/scripts/it/lab2group.sh  >> /tmp/lab2group.sh ; chmod +x /tmp/lab2group.sh; /tmp/lab2group.sh mlologins docker
 
 # Service Account for GPU-Monitor
 echo "mlo-gpu-monitor ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/mlo-gpu-monitor
@@ -214,7 +214,7 @@ echo "mlo-gpu-monitor ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/mlo-gpu-monitor
 
 # runuser -l mlo-gpu-monitor -c '/mlodata1/gpu-monitor/install_scripts/install.sh' >> /var/log/mlo.log
 
-apt-get install -y nvidia-docker2=2.0.3+docker17.12.1-1 nvidia-container-runtime=2.0.0+docker17.12.1-1
+apt-get install -y nvidia-docker2=2.0.3+docker18.06.1-1 nvidia-container-runtime=2.0.0+docker18.06.1-1
 apt-get install -y bc
 usermod -a -G docker mlo-gpu-monitor
 su -c "/mlodata1/gpu-monitor/scripts/install.sh" -s /bin/sh mlo-gpu-monitor
