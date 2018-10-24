@@ -159,6 +159,12 @@ export PATH="/opt/anaconda3/bin:$PATH"
 
 ########################################
 ## Install Docker
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+apt-get update
 apt-get install -y docker.ce
 # docker-compose
 pip install -U docker-compose
@@ -211,10 +217,17 @@ curl -s http://install.iccluster.epfl.ch/scripts/it/lab2group.sh  >> /tmp/lab2gr
 echo "mlo-gpu-monitor ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/mlo-gpu-monitor
 #setup GUI for monitoring
 #   https://github.com/ThomasRobertFr/gpu-monitor
-
 # runuser -l mlo-gpu-monitor -c '/mlodata1/gpu-monitor/install_scripts/install.sh' >> /var/log/mlo.log
 
+# install nvidia-docker
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | \
+  sudo apt-key add -
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | \
+  sudo tee /etc/apt/sources.list.d/nvidia-docker.list
 apt-get install -y nvidia-docker2=2.0.3+docker18.06.1-1 nvidia-container-runtime=2.0.0+docker18.06.1-1
+
+# install other.
 apt-get install -y bc
 usermod -a -G docker mlo-gpu-monitor
 su -c "/mlodata1/gpu-monitor/scripts/install.sh" -s /bin/sh mlo-gpu-monitor
