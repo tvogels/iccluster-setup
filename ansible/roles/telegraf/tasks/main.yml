@@ -1,0 +1,21 @@
+---
+- name: Install APT key for Telegraf
+  apt_key:
+    url: https://repos.influxdata.com/influxdb.key
+    state: present
+- name: Add Telegraf repository to APT
+  apt_repository:
+    repo: deb https://repos.influxdata.com/ubuntu xenial stable
+    state: present
+- name: Install the telegraf server
+  apt:
+    name: telegraf
+    state: latest
+- name: Configure the Telegraf server
+  template:
+    src: telegraf.conf.j2
+    dest: /etc/telegraf/telegraf.conf
+- name: Reload telegraf
+  service:
+    name: telegraf
+    state: reloaded

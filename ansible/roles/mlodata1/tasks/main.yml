@@ -1,0 +1,14 @@
+---
+- name: Install NFS
+  apt:
+    name: nfs-common
+    state: latest
+- name: Mount /mlodata1
+  block:
+    - file: path=/mlodata1 state=directory
+    - mount:
+        path: /mlodata1
+        src: ic1files.epfl.ch:/ic_mlo_1_files_nfs/mlodata1
+        fstype: nfs
+        opts: soft,intr,bg
+        state: mounted

@@ -1,0 +1,5 @@
+---
+- name: Initialize LDAP stuff
+  script: ldap_setup.sh
+  args:
+    creates: /root/ldap_setup_is_done.txt

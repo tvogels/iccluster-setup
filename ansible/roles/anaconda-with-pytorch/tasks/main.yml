@@ -1,0 +1,32 @@
+---
+- name: Create install directory
+  file: path=/root/install state=directory
+
+- name: Download the Anaconda installer
+  get_url: 
+    url: https://repo.anaconda.com/archive/Anaconda3-2019.03-Linux-x86_64.sh
+    dest: /root/install/anaconda.sh 
+    mode: u+x
+
+- name: Install Anaconda
+  command: /root/install/anaconda.sh -b -p /opt/anaconda3
+  args:
+    creates: /opt/anaconda3
+
+- name: Add /opt/anaconda3/bin to path before other Python
+  lineinfile:
+    dest: /etc/environment
+    state: present
+    backrefs: yes
+    regexp: 'PATH=(["]*)((?!.*?/opt/anaconda3/bin).*?)(["]*)$'
+    line: 'PATH=\1/opt/anaconda3/bin:\2\3'
+
+- name: Install PyTorch with Anaconda
+  conda:
+    name: "{{ item }}"
+    state: latest
+    channels: pytorch
+  loop:
+    - cudatoolkit={{ cudatoolkit_version }}
+    - pytorch
+    - torchvision
