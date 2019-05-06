@@ -28,10 +28,14 @@
   git:
     repo: https://github.com/robbyrussell/oh-my-zsh
     dest: ~/.oh-my-zsh
+  tags:
+  - zsh
 - name: ZSH Config
   template:
     src: zshrc.j2
     dest: ~/.zshrc
+  tags:
+  - zsh
 # Mounting /mlo-container-scratch leads to not being able to login after reboot
 # - name: Mount /mlo-container-scratch
 #   block:
@@ -68,13 +72,18 @@
   tags: 
     - jobmonitor
 - name: Install jobmonitor
-  command: python setup.py develop
+  command: python setup.py develop --user
   args:
     chdir: ~/install/job-monitor
   tags: 
   - jobmonitor
 
 # Kubectl settings
+- name: .kube directory in home
+  file: 
+    path: ~/.kube
+    state: directory
+    
 - name: Deploy my Kubectl settings
   copy:
     src: ~/.kube/{{item}}
