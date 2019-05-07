@@ -95,3 +95,17 @@
   - vogels.key
   tags:
   - kubectl
+
+# Bit2byte cpp extension
+- name: Clone bit2byte repository
+  git:
+    repo: git@github.com:tvogels/signSGD-with-Majority-Vote.git
+    dest: ~/install/signsgd-with-majorityvote
+  tags:
+    - bit2byte
+- name: Install bit2byte
+  command: python setup.py develop --user
+  args:
+    chdir: ~/install/signsgd-with-majorityvote/main/bit2byte-extension
+  tags: 
+  - bit2byte
