@@ -1,0 +1,14 @@
+---
+- name: Install NFS
+  apt:
+    name: nfs-common
+    state: latest
+- name: Mount /mloraw1
+  block:
+    - file: path=/mloraw1 state=directory
+    - mount:
+        path: /mloraw1
+        src: ic1raw.epfl.ch:/ic_mlo_1_raw_nfs/mloraw1
+        fstype: nfs
+        opts: soft,intr,bg
+        state: mounted

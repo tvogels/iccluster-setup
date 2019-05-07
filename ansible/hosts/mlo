@@ -1,0 +1,6 @@
+[iccluster]
+iccluster045.iccluster.epfl.ch
+iccluster130.iccluster.epfl.ch
+
+[iccluster:vars]
+ansible_python_interpreter=/usr/bin/python3
