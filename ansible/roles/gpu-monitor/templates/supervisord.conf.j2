@@ -1,0 +1,34 @@
+[include]
+files = /etc/supervisor/conf.d/*.conf
+
+[rpcinterface:supervisor]
+supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
+
+[inet_http_server]
+port=0.0.0.0:9001
+
+[supervisord]
+environment=HOST={{ansible_hostname}}
+
+[supervisorctl]
+
+[group:gpu-monitor]
+programs=gpu-monitor1,gpu-monitor2,gpu-monitor3
+
+[program:gpu-monitor1]
+command=/bin/bash /mlodata1/gpu-monitor/scripts/gpu-run.sh 1
+user=mlo-gpu-monitor
+autorestart=true
+directory=/gpu-monitor/
+
+[program:gpu-monitor2]
+command=/bin/bash /gpu-monitor/scripts/gpu-run.sh 2
+user=mlo-gpu-monitor
+autorestart=true
+directory=/gpu-monitor/
+
+[program:gpu-monitor3]
+command=/bin/bash /gpu-monitor/scripts/gpu-run.sh 3
+user=mlo-gpu-monitor
+autorestart=true
+directory=/gpu-monitor/

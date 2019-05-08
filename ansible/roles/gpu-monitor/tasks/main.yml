@@ -1,0 +1,32 @@
+---
+- name: Install apt package bc
+  apt:
+    name: bc
+- name: Install apt package pip3
+  apt:
+    name: python3-pip
+- name: Create GPU monitor user
+  user:
+    name: mlo-gpu-monitor
+    uid: 902837
+    group: MLO-unit
+- name: Install supervisord
+  pip:
+    name: supervisor
+- name: Copy supervisord conf
+  template:
+    src: "templates/supervisord.conf.j2"
+    dest: "/etc/supervisord.conf"
+- name: Copy supervisord service launcher
+  copy:
+    src: "files/supervisord"
+    dest: "/etc/init.d/supervisord"
+    mode: "755"
+- name: Copy GPU-monitor files
+  copy:
+    src: "files/scripts/"
+    dest: "/gpu-monitor/scripts"
+- name: Add supervisord as a service
+  service:
+    name: supervisord
+    state: started
