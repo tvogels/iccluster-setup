@@ -61,7 +61,14 @@
     - pymongo
     - pytelegraf
     - pyarrow
-
+    - spacy
+    - torchtext
+  tags:
+   - pip
+- name: Spacy language
+  command: python -m spacy download en --user
+  tags: 
+  - spacy
 # JobMonitor
 - name: Clone jobmonitor repo
   git:
