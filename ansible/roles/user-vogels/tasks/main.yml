@@ -75,6 +75,7 @@
     repo: git@github.com:epfml/job-monitor.git
     version: master
     dest: ~/install/job-monitor
+    key_file: ~/.ssh/id_rsa
     accept_hostkey: yes
   tags: 
     - jobmonitor

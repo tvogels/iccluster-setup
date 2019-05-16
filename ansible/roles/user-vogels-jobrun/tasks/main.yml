@@ -24,4 +24,4 @@
   pause:
     seconds: 10
 - name: Run supervisor
-  command: supervisord -c ~/supervisor/supervisord.conf -q ~/supervisor/log -l ~/supervisor/supervisor.log
+  command: ~/.local/bin/supervisord -c ~/supervisor/supervisord.conf -q ~/supervisor/log -l ~/supervisor/supervisor.log
