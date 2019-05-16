@@ -10,8 +10,6 @@
     - mlodata1
     # - mlo-container-scratch  # node becomes unavailable after restart
 
-    - gpu-monitor
-
     # Send usage metrics to InfluxDB
     - role: telegraf
       influxdb_host: vogels-timeseries.mlo.k8s.iccluster.epfl.ch
