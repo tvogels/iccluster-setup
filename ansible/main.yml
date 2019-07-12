@@ -23,11 +23,16 @@
       cuda_version_major: 10
       cuda_version_minor: 1
       cudnn_version: 7.5
+
+    # Distributed training
     - role: nccl
       cuda_version_major: 10
       cuda_version_minor: 1
       cudnn_version: 2.4
-      tags: nccl
+      tags: distributed
+
+    - role: openmpi
+      tags: distributed
 
     # Pytorch
     - role: anaconda-with-pytorch

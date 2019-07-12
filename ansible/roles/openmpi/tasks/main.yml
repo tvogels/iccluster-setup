@@ -1,0 +1,24 @@
+---
+- name: Create installation directory
+  file: 
+    path: "{{ installation_directory }}"
+    state: directory
+- name: Extract OpenMPI Installer
+  unarchive:
+    src: openmpi-4.0.1.tar.bz2
+    dest: "{{ installation_directory }}"
+  register: upload_installer
+- name: Configure OpenMPI Installation
+  command: ./configure --prefix=/usr/local
+  args:
+    chdir: "{{ installation_directory }}/openmpi-4.0.1"
+  when: upload_installer.changed
+  register: openmpi_configure
+- name: Build OpenMPI
+  make:
+    chdir: "{{ installation_directory }}/openmpi-4.0.1"
+    target: install
+  when: openmpi_configure.changed
+- name: Run ldconfig
+  command: ldconfig
+  when: openmpi_configure.changed
