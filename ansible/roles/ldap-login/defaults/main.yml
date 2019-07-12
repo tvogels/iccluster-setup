@@ -1,0 +1,7 @@
+---
+allowed_groups:
+- IC-IT-unit # administrators
+- MLO-unit
+- mlologins
+
+allowed_users: []
