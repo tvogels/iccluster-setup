@@ -1,0 +1,8 @@
+---
+cuda_version_major: 10
+cuda_version_minor: 0
+cuda_version_str: "v{{ cuda_version_major }}.{{ cuda_version_minor }}"
+cuda_version_linux: "cuda-{{ cuda_version_major}}-{{ cuda_version_minor}}"
+
+nccl_version: 2.4
+nccl_version_str: "v{{ nccl_version }}"

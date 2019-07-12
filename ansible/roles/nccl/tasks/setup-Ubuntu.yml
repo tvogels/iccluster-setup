@@ -1,0 +1,6 @@
+---
+- name: Install the NCCL2 package
+  apt: "deb={{ nccl_installer.deb }} state=present update_cache=yes"
+
+- name: Install libnccl-dev package
+  apt: "deb={{ nccl_dev_installer.deb }} state=present update_cache=yes"
