@@ -1,4 +1,3 @@
-num_gpus: 2
 user: vogels
 jobmonitor_metadata_host: vogels-metadata.mlo.k8s.iccluster.epfl.ch
 jobmonitor_metadata_port: 30017
