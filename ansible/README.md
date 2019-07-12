@@ -39,7 +39,7 @@ Choose a clean Ubuntu 18.04 node without MLO customization. Use the agreed upon 
 
 ## Deploying a playbook
 1. Determine on which hosts you want to deploy. Potentially, you can make a new file in the directory `hosts/` for your selection.
-2. Run ```ansible-playbook -i hosts/rank1-neurips main.yml -k```
+2. Run ```ansible-playbook -i hosts/mlo main.yml -k```
 
 ## Organization
 `main.yml` is the main playbook. The root directory of this folder also contains `user-specific` playbooks that can install stuff under their own username.
