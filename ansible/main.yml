@@ -37,7 +37,7 @@
 
     # Pytorch
     - role: anaconda-with-pytorch
-      cudatoolkit_version: "10.0"
+      cudatoolkit_version: "10.1"
 
     # Docker
     - role: docker-ce
