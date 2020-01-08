@@ -6,7 +6,7 @@
   authorized_key:
     user: root
     state: present
-    key: '{{ item }}'
+    key: "{{ item }}"
   with_file:
     - public_keys/cperez
     - public_keys/desimone
@@ -36,24 +36,25 @@
       - build-essential
       - cmake
       - curl
-      - dos2unix 
-      - emacs 
+      - dos2unix
+      - emacs
       - g++
-      - git 
-      - htop 
-      - iotop 
+      - git
+      - htop
+      - iotop
       - libffi-dev
       - libssl-dev
-      - ncdu
       - mc
+      - ncdu
       - pkg-config
       - screen
       - software-properties-common
       - strace
-      - subversion 
-      - tmux 
-      - unzip 
-      - vim 
+      - subversion
+      - supervisor
+      - tmux
+      - unzip
+      - vim
       - vim-scripts
       - virtualenv
       - wget
