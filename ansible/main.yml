@@ -47,4 +47,4 @@
       nvidia_docker_version: 2.0.3+docker18.09.3-1
 
     # Kubectl
-    - kubectl
+    - role: kubectl
