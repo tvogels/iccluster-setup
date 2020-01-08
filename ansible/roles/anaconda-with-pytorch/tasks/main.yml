@@ -3,9 +3,9 @@
   file: path=/root/install state=directory
 
 - name: Download the Anaconda installer
-  get_url: 
+  get_url:
     url: https://repo.anaconda.com/archive/Anaconda3-2019.03-Linux-x86_64.sh
-    dest: /root/install/anaconda.sh 
+    dest: /root/install/anaconda.sh
     mode: u+x
 
 - name: Install Anaconda
@@ -22,13 +22,6 @@
     line: 'PATH=\1/opt/anaconda3/bin:\2\3'
 
 - name: Install PyTorch with Anaconda
-  conda:
-    name: "{{ item }}"
-    state: latest
-    channels: pytorch
-  loop:
-    - cudatoolkit={{ cudatoolkit_version }}
-    - pytorch
-    - torchvision
-  async: 600  # 10 minute timeout
+  command: conda install pytorch torchvision cudatoolkit={{ cudatoolkit_version }} -c pytorch
+  async: 600 # 10 minute timeout
   poll: 5
