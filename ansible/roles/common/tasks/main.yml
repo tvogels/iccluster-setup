@@ -21,6 +21,8 @@
     - public_keys/vogels
     - public_keys/lin
     - public_keys/cordonni
+  tags:
+    - public_keys
 - name: Create directory for root certificates
   file:
     path: /etc/openldap/cacerts
