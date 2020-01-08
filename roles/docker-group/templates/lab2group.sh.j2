@@ -1,0 +1,6 @@
+#!/bin/bash
+MEMBERS=$(getent group {{lab}} | awk -F: '{print $4}'| tr "," "\n")
+for user in ${MEMBERS}
+do
+        usermod -aG {{group}} ${user}
+done

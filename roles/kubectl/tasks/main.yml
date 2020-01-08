@@ -1,0 +1,19 @@
+- name: Add Google Cloud's GPG Key
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+  tags:
+  - kubectl
+
+- name: Configure upstream APT repository
+  apt_repository:
+    repo: "deb https://apt.kubernetes.io/ kubernetes-xenial main"
+  tags:
+  - kubectl
+
+- name: Install kubectl
+  apt:
+    name: kubectl
+    update_cache: True
+    state: latest
+  tags:
+  - kubectl

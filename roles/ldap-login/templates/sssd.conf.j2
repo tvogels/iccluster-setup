@@ -1,0 +1,52 @@
+[domain/scoldap]
+#EPFL users/group only accounts, not automount
+#ldap_schema = rfc2307
+#ldap_group_object_class = posixGroup
+ldap_group_object_class = groupOfNames
+ldap_group_name = cn
+ldap_group_gid_number = gidNumber
+#ldap_group_member = memberuid
+enumerate = False
+cache_credentials = False
+krb5_realm = #
+ldap_search_base = o=epfl,c=ch
+id_provider = ldap
+auth_provider = ldap
+chpass_provider = ldap
+ldap_uri = ldap://scoldap.epfl.ch
+ldap_id_use_start_tls = True
+ldap_tls_cacertdir = /etc/openldap/cacerts
+access_provider = simple
+simple_allow_groups = {% for group in allowed_groups %}{{group}}{{ "," if not loop.last else "" }}{% endfor%}
+simple_allow_users = {% for user in allowed_users %}{{user}}{{ "," if not loop.last else "" }}{% endfor%}
+
+[domain/epfl]
+#EPFL users/groups/automount
+enumerate = False
+cache_credentials = False
+krb5_realm = #
+ldap_search_base = o=epfl,c=ch
+id_provider = ldap
+auth_provider = ldap
+chpass_provider = ldap
+ldap_uri = ldap://ldap.epfl.ch
+ldap_id_use_start_tls = True
+ldap_tls_cacertdir = /etc/openldap/cacerts
+access_provider = simple
+simple_allow_groups = {% for group in allowed_groups %}{{group}}{{ "," if not loop.last else "" }}{% endfor%}
+simple_allow_users = {% for user in allowed_users %}{{user}}{{ "," if not loop.last else "" }}{% endfor%}
+
+[sssd]
+services = nss, autofs, pam
+config_file_version = 2
+domains = scoldap,epfl
+
+[nss]
+
+[pam]
+
+[sudo]
+
+[autofs]
+
+[ssh]

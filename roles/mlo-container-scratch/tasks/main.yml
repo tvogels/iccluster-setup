@@ -1,0 +1,24 @@
+- name: Create /mlo-container-scratch directory
+  file:
+    path: /mlo-container-scratch
+    state: directory
+  tags:
+    - mlo-container-scratch
+
+- name: Copy key for mlo container scratch
+  copy:
+    src: mlo.ceph.container.client.key
+    dest: /etc/ceph/mlo.ceph.container.client.key
+  tags:
+    - mlo-container-scratch
+
+- name: Mount /mlo-container-scratch
+  mount:
+    path: /mlo-container-scratch
+    src: icadmin006,icadmin007,icadmin008:/mlo-scratch
+    fstype: ceph
+    opts: noauto,rw,relatime,name=mlo,secretfile=/etc/ceph/mlo.ceph.container.client.key,noatime,nodiratime,acl
+    # the noauto option is meant to avoid the system becoming unavailable after a reboot
+    state: mounted
+  tags:
+    - mlo-container-scratch

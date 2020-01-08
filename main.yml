@@ -1,0 +1,53 @@
+- hosts: iccluster
+  remote_user: root
+  roles:
+    - common
+
+    # Login with Gaspar
+    - ldap-login
+
+    # Mounting shared filesystems
+    - mlodata1
+    - mloraw1
+    - mlo-container-scratch
+
+    # Send usage metrics to InfluxDB
+    - role: telegraf
+      influxdb_host: vogels-timeseries.mlo.k8s.iccluster.epfl.ch
+      influxdb_port: 30086
+
+    # GPU
+    - role: cuda
+      cuda_version_major: 10
+      cuda_version_minor: 1
+    - role: cudnn
+      cuda_version_major: 10
+      cuda_version_minor: 1
+      cudnn_version: 7.5
+
+    # GPU monitor
+    - role: gpu-monitor
+
+    # Distributed training
+    - role: nccl
+      cuda_version_major: 10
+      cuda_version_minor: 1
+      cudnn_version: 2.4
+      tags: distributed
+
+    # Pytorch
+    - role: anaconda-with-pytorch
+      cudatoolkit_version: "10.1"
+
+    # Docker
+    - role: docker-ce
+      docker_version: "5:18.09.3~3-0~ubuntu-bionic"
+      docker_compose_version: 1.23.2
+    - role: nvidia-docker
+      nvidia_docker_version: 2.0.3+docker18.09.3-1
+    - role: docker-group
+      lab: mlologins
+      tags: docker-group
+
+    # Kubectl
+    - role: kubectl

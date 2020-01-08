@@ -1,0 +1,27 @@
+---
+# vars file for nccl
+nccl_installer_map:
+  bionic:
+    v2.3:
+      v10.0:
+        deb: http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/libnccl2_2.3.7-1+cuda10.0_amd64.deb
+    v2.4:
+      v10.0:
+        deb: http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/libnccl2_2.4.7-1+cuda10.0_amd64.deb
+      v10.1:
+        deb: http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/libnccl2_2.4.7-1+cuda10.1_amd64.deb
+
+nccl_installer: "{{ nccl_installer_map[ansible_distribution_release][nccl_version_str][cuda_version_str]}}"
+
+nccl_dev_installer_map:
+  bionic:
+    v2.3:
+      v10.0:
+        deb: http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/libnccl-dev_2.3.7-1+cuda10.0_amd64.deb
+    v2.4:
+      v10.0:
+        deb: http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/libnccl-dev_2.4.7-1+cuda10.0_amd64.deb
+      v10.1:
+        deb: http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/libnccl-dev_2.4.7-1+cuda10.1_amd64.deb
+
+nccl_dev_installer: "{{ nccl_dev_installer_map[ansible_distribution_release][nccl_version_str][cuda_version_str]}}"

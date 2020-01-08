@@ -1,0 +1,67 @@
+---
+- name: Update the APT Registry
+  apt:
+    update_cache: true
+- name: Install public keys for root users
+  authorized_key:
+    user: root
+    state: present
+    key: "{{ item }}"
+  with_file:
+    - public_keys/cperez
+    - public_keys/desimone
+    - public_keys/ecuyer_disunm1
+    - public_keys/ecuyer_sidimac
+    - public_keys/icadmin004
+    - public_keys/iccluster-install
+    - public_keys/moulin
+    - public_keys/moulin_ed
+    - public_keys/pouli
+    - public_keys/samoutph
+    - public_keys/vogels
+    - public_keys/lin
+    - public_keys/cordonni
+  tags:
+    - public_keys
+- name: Create directory for root certificates
+  file:
+    path: /etc/openldap/cacerts
+    state: directory
+- name: Download Quovadis EPFL root certificate
+  get_url:
+    url: http://rauth.epfl.ch/Quovadis_Root_CA_2.pem
+    dest: /etc/openldap/cacerts/quovadis.pem
+- name: Install essential packages
+  apt:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    packages:
+      - build-essential
+      - cmake
+      - curl
+      - dos2unix
+      - emacs
+      - g++
+      - git
+      - htop
+      - iotop
+      - libffi-dev
+      - libssl-dev
+      - mc
+      - ncdu
+      - pkg-config
+      - screen
+      - software-properties-common
+      - strace
+      - subversion
+      - supervisor
+      - tmux
+      - unzip
+      - vim
+      - vim-scripts
+      - virtualenv
+      - wget
+      - zip
+      - zlib1g-dev
+      - zsh

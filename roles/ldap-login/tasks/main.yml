@@ -1,0 +1,88 @@
+- name: Install packages related to authentication
+  apt:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    packages:
+      - cifs-utils
+      - ldap-utils
+      - libnss-sss
+      - libpam-mount 
+      - libpam-sss
+      - nfs-common
+      - sssd
+      - sssd-tools
+      - tcsh
+
+- name: Configure System Security Services Deamon (SSSD)
+  template:
+    src: sssd.conf.j2
+    dest: /etc/sssd/sssd.conf
+    mode: 0600
+
+- name: Configure Name Service Switch (NSS)
+  template:
+    src: nsswitch.conf.j2
+    dest: /etc/nsswitch.conf
+
+- name: Enable automatic home directory creation
+  lineinfile:
+    path: /etc/pam.d/common-session
+    insertafter: EOF
+    line: 'session    required    pam_mkhomedir.so skel=/etc/skel/ umask=0022'
+
+- name: Extract various PAM-mount related config files
+  unarchive:
+    src: pam_mount.tar.gz
+    dest: /
+    list_files: yes
+
+- name: Configure PAM Mount
+  get_url:
+    url: http://install.iccluster.epfl.ch/scripts/mlo/template_.pam_mount.conf.xml
+    dest: /etc/security/.pam_mount.conf.xml
+
+- name: Configure AutoFS Override (to manual)
+  template:
+    src: autofs.override.j2
+    dest: /etc/init/autofs.override
+
+- name: Make sure 'unix' is in some PAM config file
+  lineinfile:
+    path: /var/lib/pam/seen
+    line: 'unix'
+    insertafter: EOF
+
+- name: Update PAM
+  command: pam-auth-update --force --package
+
+- name: Configure PAM common-auth
+  lineinfile:
+    path: /etc/pam.d/common-auth
+    line: 'auth    optional      pam_exec.so /usr/local/bin/login.pl common-auth'
+    insertafter: 'and here are more per-package modules'
+
+- name: Reload System Security Services Deamon (SSSD)
+  service:
+    name: sssd
+    state: restarted
+
+- name: Install CEPH Common
+  block:
+  - name: Add SERVER_GID to CEPH config file
+    lineinfile:
+      path: /etc/default/ceph
+      line: 'SERVER_GID=164045'
+      create: true
+  - name: Configure DPKG to avoid bug in CEPH Common installation
+    lineinfile:
+      path: /etc/dpkg/dpkg.cfg
+      line: "{{ item }}"
+      insertafter: EOF
+    loop:
+    - force-confold
+    - force-confdef
+  - name: CEPH APT Package
+    apt:
+      name: ceph-common
+      state: present

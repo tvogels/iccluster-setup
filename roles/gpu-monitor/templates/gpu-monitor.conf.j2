@@ -1,0 +1,15 @@
+[program:log-gpus]
+command=/bin/bash {{ gpu_monitor_directory }}/scripts/log-gpus.sh {{ gpu_monitor_directory }}/data
+user={{run_as_user}}
+
+[program:log-processes]
+command=/bin/bash {{ gpu_monitor_directory }}/scripts/log-processes.sh {{ gpu_monitor_directory }}/data
+user={{run_as_user}}
+
+[program:post-process]
+command=/bin/bash {{ gpu_monitor_directory }}/scripts/post-process.sh {{ gpu_monitor_directory }}/data
+user={{run_as_user}}
+
+[group:gpu-monitor]
+programs=log-gpus,log-processes,post-process
+

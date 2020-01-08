@@ -1,0 +1,13 @@
+---
+- name: Copy config for supervisord
+  vars:
+    gpu_monitor_directory: /mlodata1/gpu-monitor
+    run_as_user: cordonni  # any user that can read/write on mlodata1
+  template:
+    src: gpu-monitor.conf.j2
+    dest: /etc/supervisor/conf.d/gpu-monitor.conf
+
+- name: Start logging services
+  supervisorctl:
+    name: 'gpu-monitor:'
+    state: started

@@ -1,0 +1,30 @@
+[unix_http_server]
+file=/tmp/supervisor.sock
+
+[supervisord]
+logfile=/tmp/supervisord.log
+logfile_maxbytes=50MB
+logfile_backups=10
+loglevel=info
+pidfile=/tmp/supervisord.pid
+nodaemon=false
+minfds=1024
+minprocs=200
+
+[rpcinterface:supervisor]
+supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
+
+[supervisorctl]
+serverurl=unix:///tmp/supervisor.sock
+
+{% for gpu in range(jobrun_num_gpus) %}
+[program:jobrun{{gpu}}]
+command=/home/{{user}}/.local/bin/jobrun -q any --min-worker-count {{jobrun_min_worker_count}}
+user={{user}}
+autorestart=true
+environment=CUDA_VISIBLE_DEVICES='{{gpu}}',DATA="{{data_dir}}",JOBMONITOR_RESULTS_DIR="{{data_dir}}/results",JOBMONITOR_TELEGRAF_HOST=localhost,JOBMONITOR_TELEGRAF_PORT=8092,JOBMONITOR_METADATA_HOST="{{ jobmonitor_metadata_host }}",JOBMONITOR_METADATA_PORT="{{ jobmonitor_metadata_port }}",JOBMONITOR_METADATA_DB="{{ jobmonitor_metadata_db }}",JOBMONITOR_TIMESERIES_HOST="{{ jobmonitor_timeseries_host }}",JOBMONITOR_TIMESERIES_PORT="{{ jobmonitor_timeseries_port }}",GLOO_SOCKET_IFNAME="{{ socket_ifname }}"
+
+{% endfor %}
+
+[group:jobrun]
+programs={% for gpu in range(jobrun_num_gpus) %}jobrun{{gpu}}{% if not loop.last %},{% endif %}{% endfor %}
