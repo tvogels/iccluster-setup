@@ -1,0 +1,10 @@
+- name: Create update-docker-group.sh script
+  template:
+    src: lab2group.sh.j2
+    dest: /root/update-docker-group.sh
+    owner: "root"
+    group: "MLO-unit"
+    mode: "500"
+
+- name: Run update-docker-group.sh
+  command: /root/update-docker-group.sh

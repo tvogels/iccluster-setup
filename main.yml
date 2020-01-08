@@ -45,6 +45,9 @@
       docker_compose_version: 1.23.2
     - role: nvidia-docker
       nvidia_docker_version: 2.0.3+docker18.09.3-1
+    - role: docker-group
+      lab: mlologins
+      tags: docker-group
 
     # Kubectl
     - role: kubectl
