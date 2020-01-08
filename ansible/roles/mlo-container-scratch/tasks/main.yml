@@ -1,5 +1,5 @@
 - name: Create /mlo-container-scratch directory
-  file: 
+  file:
     path: /mlo-container-scratch
     state: directory
   tags:
@@ -17,7 +17,8 @@
     path: /mlo-container-scratch
     src: icadmin006,icadmin007,icadmin008:/mlo-scratch
     fstype: ceph
-    opts: rw,relatime,name=mlo,secretfile=/etc/ceph/mlo.ceph.container.client.key,acl,noatime,nodiratime
+    opts: noauto,rw,relatime,name=mlo,secretfile=/etc/ceph/mlo.ceph.container.client.key,noatime,nodiratime,acl
+    # the noauto option is meant to avoid the system becoming unavailable after a reboot
     state: mounted
   tags:
     - mlo-container-scratch

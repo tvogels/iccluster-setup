@@ -9,7 +9,7 @@
     # Mounting shared filesystems
     - mlodata1
     - mloraw1
-    # - mlo-container-scratch  # node becomes unavailable after restart
+    - mlo-container-scratch
 
     # Send usage metrics to InfluxDB
     - role: telegraf
