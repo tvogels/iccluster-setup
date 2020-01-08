@@ -8,6 +8,7 @@
 
     # Mounting shared filesystems
     - mlodata1
+    - mloraw1
     # - mlo-container-scratch  # node becomes unavailable after restart
 
     # Send usage metrics to InfluxDB
@@ -36,7 +37,7 @@
 
     # Pytorch
     - role: anaconda-with-pytorch
-      cudatoolkit_version: '10.0'
+      cudatoolkit_version: "10.0"
 
     # Docker
     - role: docker-ce
