@@ -35,7 +35,14 @@ pip install ansible
 ```
 
 ## Adding a new iccluster node
-Choose a clean Ubuntu 18.04 node without MLO customization. Use the agreed upon root password.
+- Go to [https://install.iccluster.epfl.ch/](https://install.iccluster.epfl.ch/)
+- Navigate to `My Servers` > `Setup`
+- Add the created server to the 'setup list'
+- Choose boot option `Ubuntu bionic amd64 installation via network 1804`
+- Select __no__ customization, enter our root password (ask Thijs)
+- Run setup
+- Wait for ~20 min until the 'boot option' under `My Servers` > `List` has become 'Boot OS from local hard disk'.
+- Now run ansible with `ansible-playbook -i hosts/mlo main.yml -k` and enter the root password.
 
 ## Deploying a playbook
 1. Determine on which hosts you want to deploy. Potentially, you can make a new file in the directory `hosts/` for your selection.
