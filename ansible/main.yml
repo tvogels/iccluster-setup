@@ -25,6 +25,9 @@
       cuda_version_minor: 1
       cudnn_version: 7.5
 
+    # GPU monitor
+    - role: gpu-monitor
+
     # Distributed training
     - role: nccl
       cuda_version_major: 10
