@@ -1,0 +1,6 @@
+---
+# run ssh-copy-id cordonni@<machine> before running this playbook
+- hosts: iccluster
+  remote_user: cordonni
+  roles:
+    - user-cordonni

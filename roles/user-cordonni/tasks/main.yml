@@ -1,0 +1,13 @@
+---
+- name: Clone dotfiles
+  git:
+    repo: 'https://github.com/jbcdnr/dotfiles.git'
+    dest: '/home/cordonni/dotfiles'
+
+- name: Symlink dotfiles
+  command: './bootstrap.sh -f'
+  args:
+    chdir: '~/dotfiles'
+
+- name: Initialize ZSH packages
+  command: 'zsh -i -c "echo zsh initialization done."'
