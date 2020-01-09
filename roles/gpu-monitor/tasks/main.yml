@@ -10,4 +10,4 @@
 - name: Start logging services
   supervisorctl:
     name: 'gpu-monitor:'
-    state: started
+    state: restarted
